@@ -1,0 +1,12 @@
+type full_name = [string, string]; // first name last name
+
+type storage = {
+  int: int,
+  nat: nat,
+  string: string,
+  list: list<int>,
+  map: map<string, int>,
+  set: set<int>,
+  bool: bool, 
+  full_name: full_name,
+}
