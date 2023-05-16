@@ -1,0 +1,16 @@
+#include "main.jsligo"
+
+// Define your initial storage values as a list of LIGO variable definitions,
+// the first of which will be considered the default value to be used for origination later on
+// E.g. const aStorageValue : aStorageType = 10;
+
+const storage = {
+  int: 0,
+  nat: 0 as nat,
+  string: "Some string",
+  list: list([1, 2, 3]),
+  map: Map.literal(list([["some", 1], ["other", 2]])),
+  set: Set.literal(list([1, 2, 3, 4])),
+  bool: true, 
+  full_name: ["John", "Doe"],
+};

@@ -9,4 +9,136 @@ type storage = {
   set: set<int>,
   bool: bool, 
   full_name: full_name,
+};
+
+type return_ = [list<operation>, storage];
+
+type parameter = 
+| ["SetInt", int]
+| ["SetNat", nat]
+| ["SetString", string]
+| ["AddToList", int]
+| ["RemoveFromList", int]
+| ["ReplaceList", list<int>]
+| ["AddToSet", int]
+| ["RemoveFromSet", int]
+| ["ReplaceSet", set<int>]
+| ["AddToMap", string, int]
+| ["RemoveFromMap", string]
+| ["ReplaceMap", map<string, int>]
+| ["SetBool", bool]
+| ["SetFullName", full_name]
+| ["ChangeFirstName", string]
+| ["ChangeLastName", string];
+
+const setInt = (int: int, store: storage): storage => {
+  return { ...store, int: int };
 }
+
+const setNat = (nat: nat, store: storage): storage => {
+  return { ...store, nat: nat };
+}
+
+const setString = (string: string, store: storage): storage => {
+  return { ...store, string: string };
+}
+
+const addToList = (int: int, store: storage): storage => {
+  const list = store.list;
+  const largerList = list([int, ...list]);
+  return { ...store, list: largerList };
+}
+
+const removeFromList = (int: int, store: storage): storage => {
+  const list = List.filter_map((i) => {
+    if (i != int) {
+      return Some(i);
+    } else {
+      return None();
+    }
+  }, store.list);
+  return { ...store, list: list };
+}
+
+const replaceList = (list: list<int>, store: storage): storage => {
+  return { ...store, list: list };
+}
+
+const addToSet = (int: int, store: storage): storage => {
+  const set = store.set;
+  const largerSet = Set.add(int, set);
+  return { ...store, set: largerSet };
+}
+
+const removeFromSet = (int: int, store: storage): storage => {
+  const set = Set.remove(int, store.set);
+  return { ...store, set: set };
+}
+
+const replaceSet = (set: set<int>, store: storage): storage => {
+  return { ...store, set: set };
+}
+
+const addToMap = (string: string, int: int, store: storage): storage => {
+  const map = store.map;
+  const updated_map = Map.add(string, int, map);
+  return { ...store, map: updated_map };
+}
+
+const removeFromMap = (string: string, store: storage): storage => {
+  const map = Map.remove(string, store.map);
+  return { ...store, map: map };
+}
+
+const replaceMap = (map: map<string, int>, store: storage): storage => {
+  return { ...store, map: map };
+}
+
+const setBool = (bool: bool, store: storage): storage => {
+  if (bool == store.bool) {
+    failwith("bool is already set to this value");
+  }
+  return { ...store, bool: bool };
+}
+
+const setFullName = (full_name: full_name, store: storage): storage => {
+  return { ...store, full_name: full_name };
+}
+
+const changeFirstName = (first_name: string, store: storage): storage => {
+  const [_, last_name] = store.full_name;
+  const updated_full_name = [first_name, last_name];
+  return { ...store, full_name: updated_full_name };
+}
+
+const changeLastName = (last_name: string, store: storage): storage => {
+  const [first_name, _] = store.full_name;
+  const updated_full_name = [first_name, last_name];
+  return { ...store, full_name: updated_full_name };
+}
+
+const main = ([param, store]: [parameter, storage]): return_ => {
+  return [
+    list([]),
+    match((param), {
+      SetInt: (int) => setInt(int, store),
+      SetNat: (nat) => setNat(nat, store),
+      SetString: (string) => setString(string, store),
+      AddToList: (int) => addToList(int, store),
+      RemoveFromList: (int) => removeFromList(int, store),
+      ReplaceList: (list) => replaceList(list, store),
+      AddToSet: (int) => addToSet(int, store),
+      RemoveFromSet: (int) => removeFromSet(int, store),
+      ReplaceSet: (set) => replaceSet(set, store),
+      AddToMap: (param) => addToMap(param[0], param[1], store),
+      RemoveFromMap: (string) => removeFromMap(string, store),
+      ReplaceMap: (map) => replaceMap(map, store),
+      SetBool: (bool) => setBool(bool, store),
+      SetFullName: (full_name) => setFullName(full_name, store),
+      ChangeFirstName: (first_name) => changeFirstName(first_name, store),
+      ChangeLastName: (last_name) => changeLastName(last_name, store),
+
+    })
+  ]
+} 
+
