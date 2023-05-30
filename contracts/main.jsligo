@@ -1,14 +1,22 @@
 type full_name = [string, string]; // first name last name
 
+// type person = {
+//   age: int, 
+//   full_name: full_name,
+//   is_cool: option<bool>,
+//   nationality: option<string>,
+// };
+
 type storage = {
   int: int,
   nat: nat,
   string: string,
   list: list<int>,
-  map: map<string, int>,
-  set: set<int>,
-  bool: bool, 
   full_name: full_name,
+  // map: map<string, int>,
+  // set: set<int>,
+  // bool: bool, 
+  // person: option<person>,
 };
 
 type return_ = [list<operation>, storage];
@@ -20,16 +28,17 @@ type parameter =
 | ["AddToList", int]
 | ["RemoveFromList", int]
 | ["ReplaceList", list<int>]
-| ["AddToSet", int]
-| ["RemoveFromSet", int]
-| ["ReplaceSet", set<int>]
-| ["AddToMap", string, int]
-| ["RemoveFromMap", string]
-| ["ReplaceMap", map<string, int>]
-| ["SetBool", bool]
 | ["SetFullName", full_name]
 | ["ChangeFirstName", string]
 | ["ChangeLastName", string];
+// | ["AddToSet", int]
+// | ["RemoveFromSet", int]
+// | ["ReplaceSet", set<int>]
+// | ["AddToMap", string, int]
+// | ["RemoveFromMap", string]
+// | ["ReplaceMap", map<string, int>]
+// | ["SetBool", bool]
+// | ["SetPerson", option<person>];
 
 const setInt = (int: int, store: storage): storage => {
   return { ...store, int: int };
@@ -50,56 +59,20 @@ const addToList = (int: int, store: storage): storage => {
 }
 
 const removeFromList = (int: int, store: storage): storage => {
-  const list = List.filter_map((i) => {
-    if (i != int) {
-      return Some(i);
+  const newList = List.fold_right(([item, acc]) => {
+    if (item == int) {
+      return acc;
     } else {
-      return None();
+      return list([item, ...acc]);
     }
-  }, store.list);
-  return { ...store, list: list };
+  }, store.list, list([]));
+  return { ...store, list: newList };
 }
 
 const replaceList = (list: list<int>, store: storage): storage => {
   return { ...store, list: list };
 }
 
-const addToSet = (int: int, store: storage): storage => {
-  const set = store.set;
-  const largerSet = Set.add(int, set);
-  return { ...store, set: largerSet };
-}
-
-const removeFromSet = (int: int, store: storage): storage => {
-  const set = Set.remove(int, store.set);
-  return { ...store, set: set };
-}
-
-const replaceSet = (set: set<int>, store: storage): storage => {
-  return { ...store, set: set };
-}
-
-const addToMap = (string: string, int: int, store: storage): storage => {
-  const map = store.map;
-  const updated_map = Map.add(string, int, map);
-  return { ...store, map: updated_map };
-}
-
-const removeFromMap = (string: string, store: storage): storage => {
-  const map = Map.remove(string, store.map);
-  return { ...store, map: map };
-}
-
-const replaceMap = (map: map<string, int>, store: storage): storage => {
-  return { ...store, map: map };
-}
-
-const setBool = (bool: bool, store: storage): storage => {
-  if (bool == store.bool) {
-    failwith("bool is already set to this value");
-  }
-  return { ...store, bool: bool };
-}
 
 const setFullName = (full_name: full_name, store: storage): storage => {
   return { ...store, full_name: full_name };
@@ -117,6 +90,56 @@ const changeLastName = (last_name: string, store: storage): storage => {
   return { ...store, full_name: updated_full_name };
 }
 
+// const addToSet = (int: int, store: storage): storage => {
+//   const set = store.set;
+//   const largerSet = Set.add(int, set);
+//   return { ...store, set: largerSet };
+// }
+
+// const removeFromSet = (int: int, store: storage): storage => {
+//   const set = Set.remove(int, store.set);
+//   return { ...store, set: set };
+// }
+
+// const replaceSet = (set: set<int>, store: storage): storage => {
+//   return { ...store, set: set };
+// }
+
+// const addToMap = (string: string, int: int, store: storage): storage => {
+//   const map = store.map;
+//   const updated_map = Map.add(string, int, map);
+//   return { ...store, map: updated_map };
+// }
+
+// const removeFromMap = (string: string, store: storage): storage => {
+//   const map = Map.remove(string, store.map);
+//   return { ...store, map: map };
+// }
+
+// const replaceMap = (map: map<string, int>, store: storage): storage => {
+//   return { ...store, map: map };
+// }
+
+// const setBool = (bool: bool, store: storage): storage => {
+//   if (bool != store.bool) {
+//     return { ...store, bool: bool };
+//   } else {
+//     failwith("bool is already set to this value");
+//     return store;
+//   }
+// }
+
+// const setPerson = (person: option<person>, store: storage): storage => {
+//   const {full_name, age, nationality, is_cool} = Option.unopt(person);
+//   if (Option.is_some(store.person)) {
+//     const original_person = Option.unopt(store.person);
+//     const updated_person = {...original_person, full_name, age, nationality: nationality, is_cool: is_cool};
+//     return { ...store, person: Some(updated_person) };
+//   } else {
+//     return { ...store, person: None() as option<person> };
+//   }
+// }
+
 const main = ([param, store]: [parameter, storage]): return_ => {
   return [
     list([]),
@@ -127,18 +150,17 @@ const main = ([param, store]: [parameter, storage]): return_ => {
       AddToList: (int) => addToList(int, store),
       RemoveFromList: (int) => removeFromList(int, store),
       ReplaceList: (list) => replaceList(list, store),
-      AddToSet: (int) => addToSet(int, store),
-      RemoveFromSet: (int) => removeFromSet(int, store),
-      ReplaceSet: (set) => replaceSet(set, store),
-      AddToMap: (param) => addToMap(param[0], param[1], store),
-      RemoveFromMap: (string) => removeFromMap(string, store),
-      ReplaceMap: (map) => replaceMap(map, store),
-      SetBool: (bool) => setBool(bool, store),
       SetFullName: (full_name) => setFullName(full_name, store),
       ChangeFirstName: (first_name) => changeFirstName(first_name, store),
       ChangeLastName: (last_name) => changeLastName(last_name, store),
-
+      // AddToSet: (int) => addToSet(int, store),
+      // RemoveFromSet: (int) => removeFromSet(int, store),
+      // ReplaceSet: (set: set<int>) => replaceSet(set, store),
+      // AddToMap: (param) => addToMap(param[0], param[1], store),
+      // RemoveFromMap: (string) => removeFromMap(string, store),
+      // ReplaceMap: (map) => replaceMap(map, store),
+      // SetBool: (bool) => setBool(bool, store),
+      // SetPerson: (person) => setPerson(person, store),
     })
   ]
 } 
-
