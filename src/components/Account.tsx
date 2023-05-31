@@ -8,10 +8,9 @@ import {NetworkType} from '@airgap/beacon-types';
 
 
 export const Account = ({className, Tezos, state: {walletConnected, isLoading, pkh, balance}, setState, wallet }: {className?: string; Tezos: TezosToolkit; state: MainState; setState: Dispatch<SetStateAction<MainState>>; wallet: BeaconWallet}) => {
-  console.log('here')
 
   const connectWallet = async () => {
-    // TODO CONNECT WALLET
+    // TODO: Connect wallet
     console.log("connect wallet")
     await wallet.requestPermissions({network: { type: NetworkType.CUSTOM, rpcUrl: 'http://localhost:20000' }});
     Tezos.setWalletProvider(wallet);
@@ -19,7 +18,7 @@ export const Account = ({className, Tezos, state: {walletConnected, isLoading, p
   }
 
   const disconnectWallet = async () => {
-    // TODO DISCONNECT WALLET
+    // TODO: Disconnect wallet
     console.log("disconnect wallet")
     await wallet.clearActiveAccount();
     Tezos.setWalletProvider(undefined);
@@ -30,13 +29,13 @@ export const Account = ({className, Tezos, state: {walletConnected, isLoading, p
     <Card className={`w-fit mt-4 mr-4 p-4 h-fit ${className}`}>
       <div className="flex justify-center items-center flex-col">
         {walletConnected ? 
-          <Button className="mb-2 border-2 p-2 rounded-md border-green-600" onClick={disconnectWallet}>Disconnect</Button> 
+          <Button className="mb-2 border-2 p-2 rounded-md border-green-600" onClick={disconnectWallet} isLoading={isLoading}>Disconnect</Button> 
           : 
-          <Button className="border-2 p-2 rounded-md border-green-600" onClick={connectWallet}>Connect Wallet</Button>}
+          <Button className="border-2 p-2 rounded-md border-green-600" onClick={connectWallet} isLoading={isLoading}>Connect Wallet</Button>}
       </div>
       {walletConnected ?
         <>
-        {/* TODO DISPLAY ACCOUNT */}
+        {/* TODO: DISPLAY ACCOUNT */}
           <p className="pb-2">PKH: {pkh}</p>
           <p>BALANCE: {balance}</p>
           {/* <p className="pb-2">PKH: tz1somethingsomething</p>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Account } from "./components/Account";
 import { Card } from "./components/Card";
 import { AvailableEntrypoints } from "./components/AvailableEntrypoints";
@@ -11,22 +11,23 @@ import { BeaconWallet } from "@taquito/beacon-wallet";
 import { NetworkType } from "@airgap/beacon-types";
 
 function App() {
-  // TODO add your contract address
+  // TODO: add your contract address
   const contractAddress = "KT1RNYRNUM1Tk5J4iXHKN51TeXteNYKhPzZC";
+  // default storage and main helper state
   const [storage, setStorage] = useState<Storage>();
   const [state, setState] = useState<MainState>({
     isLoading: false,
     error: "",
     walletConnected: false,
-    selectedEntrypoint: undefined, // todo refactor to accept undefined
+    selectedEntrypoint: undefined, // TODO: refactor to accept undefined
     entrypointParams: [],
   });
 
-  // TODO initialize Tezos toolkit
-  const Tezos = useMemo(() => new TezosToolkit("http://localhost:20000"), []);
+  // TODO: initialize Tezos toolkit
+  const [Tezos] = useState(new TezosToolkit("http://localhost:20000"));
 
-  // TODO initialize wallet
-  const wallet = useMemo(() => {
+  // TODO: initialize wallet
+  const [wallet] = useState(() => {
     const wallet = new BeaconWallet({
       name: "My First Actual dApp",
       preferredNetwork: NetworkType.CUSTOM,
@@ -36,11 +37,11 @@ function App() {
       setState((prev: MainState) => ({ ...prev, walletConnected: false }));
     }
     return wallet;
-  }, []);
+  });
   const [entrypointsList, setEntrypointsList] = useState<string[][]>([]);
   const [contract, setContract] = useState<ContractAbstraction<Wallet>>();
 
-  // TODO CONNECT WALLET ON REFRESH
+  // TODO: Connect wallet on refresh
   useEffect(() => {
     (async () => {
       const accountIdentifier = (await wallet.client.getActiveAccount())
@@ -52,7 +53,7 @@ function App() {
     })();
   }, [Tezos, wallet]);
 
-  // TODO FETCH STORAGE
+  // TODO: Fetch storage, entrypoints, balance, and pkh
   useEffect(() => {
     (async () => {
       try {
@@ -69,14 +70,15 @@ function App() {
         setEntrypointsList(contractEntrypoints);
         // get balance and pkh and setState
         const pkh = await Tezos.wallet.pkh();
-        const balance = await Tezos.tz.getBalance(pkh);
+        const balance = await Tezos.rpc.getBalance(pkh);
         setState((prev) => ({...prev, balance: balance.toString(), pkh: pkh}));
 
       } catch (err) {
         console.log(err);
+        setState((prev) => ({ ...prev, error: JSON.stringify(err) }));
       }
     })();
-  }, [Tezos.contract, Tezos.wallet]);
+  }, [Tezos.contract, Tezos.rpc, Tezos.wallet]);
 
   return (
     <div className="bg-slate-600 flex h-full w-full overflow-auto justify-between">
@@ -94,7 +96,7 @@ function App() {
         <Card className="p-4 m-4 h-fit">
           <h2>My Contract dApp</h2>
         </Card>
-        <EntrypointCard state={state} Tezos={Tezos} contract={contract}/>
+        <EntrypointCard state={state} setState={setState} Tezos={Tezos} contract={contract} setStorage={setStorage}/>
         <div></div>
       </div>
       <div className="w-fit">
