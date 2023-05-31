@@ -1,0 +1,92 @@
+{ parameter
+    (or (or (or (or (int %addToList) (string %changeFirstName))
+                (or (string %changeLastName) (int %removeFromList)))
+            (or (or (list %replaceList int) (pair %setFullName string string))
+                (or (int %setInt) (nat %setNat))))
+        (string %setString)) ;
+  storage
+    (pair (pair (pair (pair %full_name string string) (int %int)) (list %list int) (nat %nat))
+          (string %string)) ;
+  code { UNPAIR ;
+         IF_LEFT
+           { IF_LEFT
+               { IF_LEFT
+                   { IF_LEFT
+                       { DUP 2 ;
+                         DUP 3 ;
+                         CAR ;
+                         DUP ;
+                         CDR ;
+                         DIG 4 ;
+                         CAR ;
+                         CDR ;
+                         CAR ;
+                         DIG 4 ;
+                         CONS ;
+                         UPDATE 1 ;
+                         UPDATE 2 ;
+                         UPDATE 1 }
+                       { DUP 2 ;
+                         CAR ;
+                         CAR ;
+                         CAR ;
+                         CDR ;
+                         DUP 3 ;
+                         DIG 3 ;
+                         CAR ;
+                         DUP ;
+                         CAR ;
+                         DIG 3 ;
+                         DIG 4 ;
+                         PAIR ;
+                         UPDATE 1 ;
+                         UPDATE 1 ;
+                         UPDATE 1 } }
+                   { IF_LEFT
+                       { DUP 2 ;
+                         CAR ;
+                         CAR ;
+                         CAR ;
+                         CAR ;
+                         DUP 3 ;
+                         DIG 3 ;
+                         CAR ;
+                         DUP ;
+                         CAR ;
+                         DIG 4 ;
+                         DIG 4 ;
+                         PAIR ;
+                         UPDATE 1 ;
+                         UPDATE 1 ;
+                         UPDATE 1 }
+                       { NIL int ;
+                         DUP 3 ;
+                         CAR ;
+                         CDR ;
+                         CAR ;
+                         NIL int ;
+                         SWAP ;
+                         ITER { CONS } ;
+                         ITER { DUP 3 ; DUP 2 ; COMPARE ; EQ ; IF { DROP } { CONS } } ;
+                         SWAP ;
+                         DROP ;
+                         DUP 2 ;
+                         DIG 2 ;
+                         CAR ;
+                         DUP ;
+                         CDR ;
+                         DIG 3 ;
+                         UPDATE 1 ;
+                         UPDATE 2 ;
+                         UPDATE 1 } } }
+               { IF_LEFT
+                   { IF_LEFT
+                       { DUP 2 ; DIG 2 ; CAR ; DUP ; CDR ; DIG 3 ; UPDATE 1 ; UPDATE 2 ; UPDATE 1 }
+                       { DUP 2 ; DIG 2 ; CAR ; DUP ; CAR ; DIG 3 ; UPDATE 1 ; UPDATE 1 ; UPDATE 1 } }
+                   { IF_LEFT
+                       { DUP 2 ; DIG 2 ; CAR ; DUP ; CAR ; DIG 3 ; UPDATE 2 ; UPDATE 1 ; UPDATE 1 }
+                       { DUP 2 ; DIG 2 ; CAR ; DUP ; CDR ; DIG 3 ; UPDATE 2 ; UPDATE 2 ; UPDATE 1 } } } }
+           { UPDATE 2 } ;
+         NIL operation ;
+         PAIR } }
+

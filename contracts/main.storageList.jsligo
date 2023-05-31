@@ -9,8 +9,15 @@ const storage = {
   nat: 0 as nat,
   string: "Some string",
   list: list([1, 2, 3]),
-  map: Map.literal(list([["some", 1], ["other", 2]])),
-  set: Set.literal(list([1, 2, 3, 4])),
-  bool: true, 
   full_name: ["John", "Doe"],
+  // map: Map.literal(list([["some", 1], ["other", 2]])),
+  // set: Set.literal(list([1, 2, 3, 4])),
+  // bool: true, 
+  // person: Some({
+  //   full_name: ["John", "Doe"],
+  //   age: 42,
+  //   nationality: None() as option<string>,
+  //   is_cool: None() as option<bool>,
+  // })
+  // person: None() as option<person>
 };
