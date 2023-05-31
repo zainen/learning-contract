@@ -9,12 +9,9 @@ export const StorageContainer = ({ className, storage}: {className: string, stor
   return (
     <Card className={`w-fit mt-4 ml-4 p-4 max-w-sm ${className}`}>
       <h2 className="text-2xl font-bold">Storage</h2>
-      {/* use Object.entries of storage and map over each item grabbing [key, value] and returning a StorageItem Component */}
-      {Object.entries(storage ?? {}).map(([key, value]) => {
-      // TODO: pass storageKey and value to StorageItem
+      {/* TODO Contract Abstraction: pass storageKey and value to StorageItem */}
+      {/* use the Object.entries of storage and map over each item grabbing [key, value] and returning a StorageItem Component */}
 
-        return <StorageItem key={key} storageKey={key} value={value} />
-      })}
     </Card>
   )
 }

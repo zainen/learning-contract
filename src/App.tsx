@@ -11,68 +11,53 @@ import { BeaconWallet } from "@taquito/beacon-wallet";
 import { NetworkType } from "@airgap/beacon-types";
 
 function App() {
-  // TODO: add your contract address
-  const contractAddress = "KT1RNYRNUM1Tk5J4iXHKN51TeXteNYKhPzZC";
+  // TODO Contract Abstraction: add your contract address
+  const contractAddress = "";
   // default storage and main helper state
   const [storage, setStorage] = useState<Storage>();
   const [state, setState] = useState<MainState>({
     isLoading: false,
     error: "",
     walletConnected: false,
-    selectedEntrypoint: undefined, // TODO: refactor to accept undefined
+    selectedEntrypoint: undefined,
     entrypointParams: [],
   });
 
-  // TODO: initialize Tezos toolkit
-  const [Tezos] = useState(new TezosToolkit("http://localhost:20000"));
+  // TODO Connecting your wallet: initialize Tezos toolkit with your chosen rpc
+  const [Tezos] = useState(new TezosToolkit(""));
 
-  // TODO: initialize wallet
-  const [wallet] = useState(() => {
-    const wallet = new BeaconWallet({
-      name: "My First Actual dApp",
-      preferredNetwork: NetworkType.CUSTOM,
-    });
-    const activeWallet = wallet.client.getActiveAccount();
-    if (!activeWallet) {
-      setState((prev: MainState) => ({ ...prev, walletConnected: false }));
-    }
-    return wallet;
-  });
+  // TODO Connecting your wallet: initialize wallet with name for your dApp and which network to connect to
+  const [wallet] = useState(new BeaconWallet({ name: "Replace me" }));
+
   const [entrypointsList, setEntrypointsList] = useState<string[][]>([]);
   const [contract, setContract] = useState<ContractAbstraction<Wallet>>();
 
-  // TODO: Connect wallet on refresh
+  // TODO Connecting your wallet: Connect wallet on refresh and set pkh and balance
   useEffect(() => {
     (async () => {
-      const accountIdentifier = (await wallet.client.getActiveAccount())
-        ?.accountIdentifier;
-      if (!accountIdentifier) return;
+      // check if active account exists (found in browser application local storage)
 
-      Tezos.setWalletProvider(wallet);
-      setState((prev: MainState) => ({ ...prev, walletConnected: true }));
+      // if no active account, return
+
+      // set Tezos wallet provider to BeaconWallet
+
+      // grab pkh and balance from Tezos with newly connected wallet and set state for balance, pkh and walletConnected
+
     })();
   }, [Tezos, wallet]);
 
-  // TODO: Fetch storage, entrypoints, balance, and pkh
+  // TODO Contract Abstraction: Fetch storage, entrypoints, balance, and pkh
   useEffect(() => {
     (async () => {
       try {
         if (!contractAddress) return;
         // get contract instance and setContract
-        const contract = await Tezos.wallet.at(contractAddress);
-        setContract(contract);
-        // get contractStorage and setStorage
-        const contractStorage = await contract.storage<Storage>();
-        setStorage(contractStorage);
-        // get entrypoints and setEntrypointsList
-        const contractEntrypoints =
-          await contract.parameterSchema.ExtractSignatures();
-        setEntrypointsList(contractEntrypoints);
-        // get balance and pkh and setState
-        const pkh = await Tezos.wallet.pkh();
-        const balance = await Tezos.rpc.getBalance(pkh);
-        setState((prev) => ({...prev, balance: balance.toString(), pkh: pkh}));
 
+        // get contractStorage and setStorage
+
+        // get entrypoints and setEntrypointsList
+
+        // get balance and pkh and setState
       } catch (err) {
         console.log(err);
         setState((prev) => ({ ...prev, error: JSON.stringify(err) }));

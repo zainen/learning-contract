@@ -11,14 +11,17 @@ export const EntrypointCard = ({state: {walletConnected, selectedEntrypoint, isL
 
   const handleSend = async () => {
     if (!contract || !selectedEntrypoint) return alert("missing either contract or entrypoint")
-    // TODO: implement sending transaction\
-    // return alert("TODO:implement me")
+    // TODO Sending contract method transactions: implement sending transaction\
+    return alert("TODO implement me")
+    // remove the following when removing the return above
+    // eslint-disable-next-line no-unreachable 
     let op: TransactionWalletOperation;
     // setState loading true
     setState(prev => ({...prev, isLoading: true}));
     try {
       // try to send transaction
-      let entrypointParams;
+      // use selectedEntrypoint as contract.methods[selectedEntrypoint] to avoid having to make multiple handlers for each entrypoint
+      let entrypointParams; // use as a way to modify the state value to use as the params for your method call
 
       if (dataType === 'multi-value') {
         // setFullName is the only multi-value entrypoint
@@ -26,33 +29,32 @@ export const EntrypointCard = ({state: {walletConnected, selectedEntrypoint, isL
         // the entrypoint method params can be spread within to pass multiple values
         
         // modify your entrypoint params
-        entrypointParams = value.split(",")
+
         
         // create your operation and send it
-        op = await contract.methods[selectedEntrypoint](...entrypointParams).send()
+
 
       } else {
+        // handle dataType === 'string' || 'list'
         // replaceList requires a list which is an array of ints
         // replaceList([1,2,3]) // this works
         // the remaining take a single string | int | nat depending on the entrypoint params
         // int && nat are both integers that can be passed as type 'number' || 'string' floats are not supported
 
         // modify your entrypoint params depending on if dataType is list or string
-        entrypointParams = dataType === 'list' ? value.split(",") : value;
+
 
         // create your operation and send it
-        op = await contract.methods[selectedEntrypoint](entrypointParams).send()
+
       }
       // await your confirmation here
-      await op.confirmation()
+
 
       // refetch and set storage
-      const contractStorage = await contract.storage<Storage>();
-      setStorage(contractStorage);
+
 
       //  refetch and set balance
-      const updatedBalance = await Tezos.tz.getBalance(await Tezos.wallet.pkh());
-      setState(prev => ({...prev, balance: updatedBalance.toString()}))
+
       
       // log in console for convenience of viewing in browser
       console.log(`Hash: ${op.opHash}`)

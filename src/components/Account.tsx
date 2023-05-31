@@ -4,25 +4,19 @@ import { TezosToolkit } from "@taquito/taquito";
 import { Button } from "./Button";
 import { MainState } from "../types";
 import { BeaconWallet } from "@taquito/beacon-wallet";
-import {NetworkType} from '@airgap/beacon-types'; 
+import { NetworkType } from '@airgap/beacon-types'; 
 
 
 export const Account = ({className, Tezos, state: {walletConnected, isLoading, pkh, balance}, setState, wallet }: {className?: string; Tezos: TezosToolkit; state: MainState; setState: Dispatch<SetStateAction<MainState>>; wallet: BeaconWallet}) => {
 
   const connectWallet = async () => {
-    // TODO: Connect wallet
-    console.log("connect wallet")
-    await wallet.requestPermissions({network: { type: NetworkType.CUSTOM, rpcUrl: 'http://localhost:20000' }});
-    Tezos.setWalletProvider(wallet);
-    setState((prev: MainState) => ({...prev, walletConnected: true}));
+    // TODO Connecting your wallet: Connect wallet
+   alert("connect wallet")
   }
 
   const disconnectWallet = async () => {
-    // TODO: Disconnect wallet
-    console.log("disconnect wallet")
-    await wallet.clearActiveAccount();
-    Tezos.setWalletProvider(undefined);
-    setState((prev: MainState) => ({...prev, walletConnected: false}));
+    // TODO Connecting your wallet: Disconnect wallet
+    alert("disconnect wallet")
   }
 
   return (
@@ -35,11 +29,9 @@ export const Account = ({className, Tezos, state: {walletConnected, isLoading, p
       </div>
       {walletConnected ?
         <>
-        {/* TODO: DISPLAY ACCOUNT */}
-          <p className="pb-2">PKH: {pkh}</p>
-          <p>BALANCE: {balance}</p>
-          {/* <p className="pb-2">PKH: tz1somethingsomething</p>
-          <p>BALANCE: 1000000000</p> */}
+        {/* TODO Connecting your wallet: DISPLAY ACCOUNT */}
+          <p className="pb-2">PKH: tz1somethingsomething</p>
+          <p>BALANCE: some balance</p>
         </>
         :
         <></>
