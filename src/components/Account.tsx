@@ -11,12 +11,17 @@ export const Account = ({className, Tezos, state: {walletConnected, isLoading, p
 
   const connectWallet = async () => {
     // TODO Connecting your wallet: Connect wallet
-   alert("connect wallet")
+    await wallet.requestPermissions({network: { type: NetworkType.CUSTOM, rpcUrl: 'http://localhost:20000' }});
+    Tezos.setWalletProvider(wallet);
+    setState((prev: MainState) => ({...prev, walletConnected: true}));
   }
 
   const disconnectWallet = async () => {
     // TODO Connecting your wallet: Disconnect wallet
     alert("disconnect wallet")
+    await wallet.clearActiveAccount();
+    Tezos.setWalletProvider(undefined);
+    setState((prev: MainState) => ({...prev, walletConnected: false}));
   }
 
   return (
@@ -29,7 +34,7 @@ export const Account = ({className, Tezos, state: {walletConnected, isLoading, p
       </div>
       {walletConnected ?
         <>
-        {/* TODO Connecting your wallet: DISPLAY ACCOUNT */}
+        {/* TODO Connecting your wallet: Display Account */}
           <p className="pb-2">PKH: tz1somethingsomething</p>
           <p>BALANCE: some balance</p>
         </>

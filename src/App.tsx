@@ -46,7 +46,7 @@ function App() {
     })();
   }, [Tezos, wallet]);
 
-  // TODO Contract Abstraction: Fetch storage, entrypoints, balance, and pkh
+  // TODO Contract Abstraction: get and set a ContractAbstraction, Fetch storage, andd setEntrypointsList
   useEffect(() => {
     (async () => {
       try {
@@ -57,7 +57,7 @@ function App() {
 
         // get entrypoints and setEntrypointsList
 
-        // get balance and pkh and setState
+
       } catch (err) {
         console.log(err);
         setState((prev) => ({ ...prev, error: JSON.stringify(err) }));
